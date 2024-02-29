@@ -1,0 +1,246 @@
+-----------------------------------------------------------------------------LEETCODE  SQLSOLUTIONS------------------------------------------------------------------------------------------------------
+175. COMBINE TWO TABLES
+
+Write a solution to report the first name, last name, city, and state of each person in the Person table. If the address of a personId is not present in the Address table, report null instead.
+Return the result table in any order.
+The result format is in the following example.
+
+Example 1:
+
+Input: 
+Person table:
++----------+----------+-----------+
+| personId | lastName | firstName |
++----------+----------+-----------+
+| 1        | Wang     | Allen     |
+| 2        | Alice    | Bob       |
++----------+----------+-----------+
+
+Address table:
++-----------+----------+---------------+------------+
+| addressId | personId | city          | state      |
++-----------+----------+---------------+------------+
+| 1         | 2        | New York City | New York   |
+| 2         | 3        | Leetcode      | California |
++-----------+----------+---------------+------------+
+
+Output: 
++-----------+----------+---------------+----------+
+| firstName | lastName | city          | state    |
++-----------+----------+---------------+----------+
+| Allen     | Wang     | Null          | Null     |
+| Bob       | Alice    | New York City | New York |
++-----------+----------+---------------+----------+
+Explanation: 
+There is no address in the address table for the personId = 1 so we return null in their city and state.
+addressId = 1 contains information about the address of personId = 2.
+
+Solution:
+
+#WRITE QUERY
+SELECT PERSON.FIRSTNAME,LASTNAME,ADDRESS.CITY,STATE FROM PERSON
+LEFT JOIN ADDRESS
+ON PERSON.PERSONID=ADDRESS.PERSONID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+176. SECOND HIGHEST SALARY
+
+Write a solution to find the second highest salary from the Employee table. If there is no second highest salary, return null (return None in Pandas).
+The result format is in the following example.
+
+ Example 1:
+
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+
+Output: 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+Example 2:
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+
+Output: 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+Solution:
+
+#WIRTE QUERY
+SELECT (MAX(SALARY)) AS SECONDHIGHESTSALARY FROM EMPLOYEE
+WHERE SALARY<(SELECT MAX(SALARY) FROM EMPLOYEE)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+181. EMPLOYEES EARNING MORE THAN THEIR MANAGERS
+
+Write a solution to find the employees who earn more than their managers.
+Return the result table in any order.
+The result format is in the following example.
+
+Example 1:
+
+Input: 
+Employee table:
++----+-------+--------+-----------+
+| id | name  | salary | managerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | Null      |
+| 4  | Max   | 90000  | Null      |
++----+-------+--------+-----------+
+
+Output: 
++----------+
+| Employee |
++----------+
+| Joe      |
++----------+
+Explanation: Joe is the only employee who earns more than his manager.
+
+Solution:
+#WIRTE QUERY
+SELECT E.NAME AS EMPLOYEE FROM EMPLOYEE AS E WHERE E.SALARY > (
+    SELECT SALARY FROM EMPLOYEE WHERE E.MANAGERID = ID
+)
+AND E.MANAGERID IS NOT NULL;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+184. DEPARTMENT HIGHEST SALARY
+
+Write a solution to find employees who have the highest salary in each of the departments.
+Return the result table in any order.
+The result format is in the following example.
+
+Input: 
+Employee table:
++----+-------+--------+--------------+
+| id | name  | salary | departmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 70000  | 1            |
+| 2  | Jim   | 90000  | 1            |
+| 3  | Henry | 80000  | 2            |
+| 4  | Sam   | 60000  | 2            |
+| 5  | Max   | 90000  | 1            |
++----+-------+--------+--------------+
+
+Department table:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | IT    |
+| 2  | Sales |
++----+-------+
+
+Output: 
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
+| IT         | Max      | 90000  |
++------------+----------+--------+
+Explanation: Max and Jim both have the highest salary in the IT department and Henry has the highest salary in the Sales department.
+
+
+Solution:
+
+#wirte query
+SELECT  d.name AS Department,e.name AS Employee,e.salary AS Salary
+FROM  Department d
+JOIN  Employee e ON d.id = e.departmentId
+JOIN (
+    SELECT  departmentId,  MAX(salary) AS max_salary FROM  Employee
+    GROUP BY  departmentId) max_salaries ON e.departmentId = max_salaries.departmentId AND e.salary = max_salaries.max_salary
+ORDER BY  d.id;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+511. GAME PLAY ANALYSIS - 1
+
+Write a solution to find the first login date for each player.
+Return the result table in any order.
+The result format is in the following example.
+
+Example 1:
+Input: 
+Activity table:
++-----------+-----------+------------+--------------+
+| player_id | device_id | event_date | games_played |
++-----------+-----------+------------+--------------+
+| 1         | 2         | 2016-03-01 | 5            |
+| 1         | 2         | 2016-05-02 | 6            |
+| 2         | 3         | 2017-06-25 | 1            |
+| 3         | 1         | 2016-03-02 | 0            |
+| 3         | 4         | 2018-07-03 | 5            |
++-----------+-----------+------------+--------------+
+
+Output: 
++-----------+-------------+
+| player_id | first_login |
++-----------+-------------+
+| 1         | 2016-03-01  |
+| 2         | 2017-06-25  |
+| 3         | 2016-03-02  |
++-----------+-------------+
+
+Solution:
+
+#wirte Query
+SELECT PLAYER_ID,MIN(EVENT_DATE) AS FIRST_LOGIN
+FROM ACTIVITY
+GROUP BY PLAYER_ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+584. FIND CUSTOMER REFEREE
+
+Find the names of the customer that are not referred by the customer with id = 2.
+Return the result table in any order.
+The result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Customer table:
++----+------+------------+
+| id | name | referee_id |
++----+------+------------+
+| 1  | Will | null       |
+| 2  | Jane | null       |
+| 3  | Alex | 2          |
+| 4  | Bill | null       |
+| 5  | Zack | 1          |
+| 6  | Mark | 2          |
++----+------+------------+
+Output: 
++------+
+| name |
++------+
+| Will |
+| Jane |
+| Bill |
+| Zack |
++------+
+
+Solution:
+
+#WIRTE QUERY
+SELECT NAME 
+FROM CUSTOMER
+WHERE REFEREE_ID <> 2 OR REFEREE_ID IS NULL;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
