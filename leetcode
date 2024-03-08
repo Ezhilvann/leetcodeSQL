@@ -170,6 +170,41 @@ JOIN (
     GROUP BY  departmentId) max_salaries ON e.departmentId = max_salaries.departmentId AND e.salary = max_salaries.max_salary
 ORDER BY  d.id;
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+197. RISING TEMPERATURE
+
+Write a solution to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
+Return the result table in any order.
+The result format is in the following example.
+
+Example 1:
+Input: 
+Weather table:
++----+------------+-------------+
+| id | recordDate | temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+Output: 
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+Explanation: 
+In 2015-01-02, the temperature was higher than the previous day (10 -> 25).
+In 2015-01-04, the temperature was higher than the previous day (20 -> 30)
+
+Solution:
+# write Query
+select a.id as Id from Weather a
+inner join Weather b
+on datediff(a.recordDate,b.recordDate)=1
+where  a.temperature > b.temperature;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 511. GAME PLAY ANALYSIS - 1
 
 Write a solution to find the first login date for each player.
@@ -279,3 +314,4 @@ Solution:
 SELECT * FROM CINEMA 
 WHERE ID%2=1 AND DESCRIPTION<>"BORING"
 ORDER BY RATING DESC;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
